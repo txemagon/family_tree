@@ -4,6 +4,9 @@ require 'optparse'
 require 'methadone'
 require 'family_tree.rb'
 
+$logger = Logger.new(STDERR)
+$logger.level = Logger::DEBUG
+
 class App
   include Methadone::Main
   include Methadone::CLILogging
@@ -19,10 +22,7 @@ class App
       STDERR.puts "Type your tree using net format. Ctrl-D to finish."
       line = ARGF.read
     end
-    line = line.split("\n").map { |l| l.gsub(/#.*$/, "").gsub(/^\s*$/, "") }.select { |l| !l.empty? }.join("\n")
-    
-    puts line
-
+    Scanner::go line
   end
 
   # supplemental methods here

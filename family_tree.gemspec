@@ -4,8 +4,8 @@ require File.expand_path('../lib/family_tree/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["txemagon / imasen"]
   gem.email         = ["txema.gonz@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{Creates a family tree}
+  gem.summary       = %q{Writing down the relationships between members in a propietary syntax, this program generates a family tree. }
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($\)
