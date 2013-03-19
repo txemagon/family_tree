@@ -23,21 +23,32 @@ module FamilyTree
       band = StringIO.new list
       name = ""
       items = []
+      def items.push(name)
+        self << name.strip
+      end
       delimiter = ','
+      group_unit = 0
       while(car = band.getc) do
         case car
+            when ')'
+              group_unit -= 1 
+              name << car unless group_unit == 0 # Preserve inner parenthesis
 	    when delimiter then
-	      items << name 
-	      name = "" 
-	      delimiter = ','
+              if ( group_unit == 0)
+	         items.push name
+	         name = "" 
+              else
+                name << car # Preserve comma inside marriage units
+              end
 	    when '('
-	      delimiter = ')'
+              name << car unless group_unit == 0
+              group_unit += 1
             else
-		name << car
+		name << car  # Preserve inner parenthesis
 	    end
-      #list.split(",").collect { |name| name.strip }
      end 
 
+     items.push name # flush the last name
      items
      end
   end
