@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'methadone'
+require 'family_tree.rb'
+
+class App
+  include Methadone::Main
+  include Methadone::CLILogging
+  include FamilyTree
+
+  main do |tree_file|
+
+    line = ""
+    begin
+      line << ARGF.read_nonblock(1)
+      line << ARGF.read
+    rescue
+      STDERR.puts "Type your tree using net format. Ctrl-D to finish."
+      line = ARGF.read
+    end
+    line = line.split("\n").map { |l| l.gsub(/#.*$/, "").gsub(/^\s*$/, "") }.select { |l| !l.empty? }.join("\n")
+    
+    puts line
+
+  end
+
+  # supplemental methods here
+
+  # Declare command-line interface here
+
+  description( "Generates a diagram of the family tree.\n" +
+               "Example: \t#{$0} (Txema, Laura)\n" +
+               "Example: \t#{$0} < examples/siblings.txt")
+  
+  # Default options
+  options[:format] = "dot"
+
+  # Accept flags via:
+  on("-f", "--format VAL","Default output format", "(dot|net)", "(Default: dot)")
+  # options[flag] will contain VAL
+  
+  # Specify switches via:
+  # on("--[no-]switch","Some switch")
+  
+
+  #
+  # Or, just call OptionParser methods on opts
+  
+  # Require an argument
+  # arg :arg 
+  
+  # # Make an argument optional
+  arg :tree_file, :optional
+
+  version FamilyTree::VERSION
+
+  use_log_level_option
+
+  go!
+end
