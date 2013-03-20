@@ -11,6 +11,7 @@ class App
   include Methadone::Main
   include Methadone::CLILogging
   include FamilyTree
+  include FamilyTree::Errors
 
   main do |tree_file|
 
