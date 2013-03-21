@@ -4,8 +4,11 @@ module FamilyTree
 
   class Parser
 
+    ENVIRONMENT = %w{ person marriage children parents }
+
      def initialize(raw_input)
        @raw_input = raw_input
+       @status = :person
      end
 
      def start
@@ -19,11 +22,16 @@ module FamilyTree
 
      private
 
+     def trigger car
+        
+     end
+
      def split list
-      band = StringIO.new list
+      punctuator = [ ',', '(', ')']
+      band = StringIO.new list  # Pretend the input is a stream
       name = ""
       items = []
-      def items.push(name)
+      def items.push(name)      # Tag and Beautify tokens 
         self << name.strip
       end
       delimiter = ','
