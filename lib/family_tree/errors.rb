@@ -14,6 +14,9 @@ module FamilyTree
     class UnterminatedString < LexerError
     end
 
+    class TokenError < NetError
+    end
+
   end
 
 end

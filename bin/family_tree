@@ -5,7 +5,7 @@ require 'methadone'
 require 'family_tree.rb'
 
 $logger = Logger.new(STDERR)
-$logger.level = Logger::DEBUG
+$logger.level = Logger::INFO
 
 class App
   include Methadone::Main
@@ -23,7 +23,7 @@ class App
       STDERR.puts "Type your tree using net format. Ctrl-D to finish."
       line = ARGF.read
     end
-    Scanner::go line
+    Driver::go line
   end
 
   # supplemental methods here
