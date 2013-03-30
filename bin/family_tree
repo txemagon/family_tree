@@ -5,7 +5,7 @@ require 'methadone'
 require 'family_tree.rb'
 
 $logger = Logger.new(STDERR)
-$logger.level = Logger::INFO
+$logger.level = Logger::UNKNOWN
 
 class App
   include Methadone::Main
@@ -15,6 +15,8 @@ class App
 
   main do |tree_file|
 
+    $logger.level = Logger::INFO if options[:verbose]
+
     line = ""
     begin
       line << ARGF.read_nonblock(1)
@@ -23,7 +25,8 @@ class App
       STDERR.puts "Type your tree using net format. Ctrl-D to finish."
       line = ARGF.read
     end
-    Driver::go line
+    
+    Driver::go line, options[:lexer]
   end
 
   # supplemental methods here
@@ -31,26 +34,30 @@ class App
   # Declare command-line interface here
 
   description( "Generates a diagram of the family tree.\n" +
-               "Example: \t#{$0} (Txema, Laura)\n" +
-               "Example: \t#{$0} < examples/siblings.txt")
-  
+               "Example: \t#{$0} file.txt\n" +
+               "Example: \t#{$0} <<< \"(Txema, Laura)\"\n" +
+               "Example: \t#{$0} < examples/siblings.txt\n"  +
+               "Example: \tcat file.txt | #{$0} ")
+
   # Default options
   options[:format] = "dot"
+  options[:lexer]  = "none"
 
   # Accept flags via:
-  on("-f", "--format VAL","Default output format", "(dot|net)", "(Default: dot)")
   # options[flag] will contain VAL
-  
+  on("-f", "--format VAL","Default output format", "(dot|net)")
+  on("-l", "--lexer VAL" ,"Lexer output format"  , "(none|yaml|xml)")
+
   # Specify switches via:
   # on("--[no-]switch","Some switch")
-  
+  on("-v", "--verbose", "verbose ouptut")
 
   #
   # Or, just call OptionParser methods on opts
-  
+
   # Require an argument
   # arg :arg 
-  
+
   # # Make an argument optional
   arg :tree_file, :optional
 

@@ -9,11 +9,46 @@ module FamilyTree
 
     class Token < Array
 
+      OUTPUT_FORMAT = %w{ yaml xml }.collect{ |x| x.to_sym }
+
       @@starters = Hash.new
       @@stoppers = Hash.new
 
       class << self
         attr_accessor :starter, :stopper
+      end
+
+      def format?(value)
+        OUTPUT_FORMAT.include? value.to_sym
+      end
+
+      def Token.output_formats
+        OUTPUT_FORMAT
+      end
+
+      def class_name
+        self.class.name.split(/::/).last.downcase
+      end
+
+      def to_xml()
+         output = ""
+         output << "<" + class_name + ">\n"
+         self.each do |child| 
+            if child.respond_to? :to_xml
+               child.to_xml.each_line do |l|
+                 output << "  " + l
+               end
+            else
+              output << "  " + child.to_s + "\n"
+            end
+         end
+         output << "</" + class_name + ">\n"
+         output
+      end
+
+      def to_yaml
+        # todo: Develop yaml output
+        raise "Still under development."
       end
 
       def push(name)

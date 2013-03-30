@@ -2,21 +2,47 @@ require 'stringio'
 
 module FamilyTree
 
+  ##
+  # This class is a finite automata that tokenizes a family tree in written down in
+  # net format and returns a nested array of tokens. Each token is a subclass of Array.
+  #
+  # Instantiate the parser with the raw input and then start it. You can get a block with
+  # the output in the format specified by the argument.
+
   class Lexer
 
-    ENVIRONMENT = %w/ single (marriage) [children] {parents} /
+    ENVIRONMENT   = %w/ single (marriage) [children] {parents} /
 
      def initialize(raw_input)
        @raw_input = raw_input
        @status = :person
      end
 
-     def start
+    ##
+    # Start tokenizenig the input string.
+    # xml and yaml supported by format
+    # Whenever a valid format is supplied then a block is called
+    # with the formatted string.
+    #
+    # Returns a nested array of tokens (DOM)
+
+     def start(*args)
+       if args and !args.empty?
+         format = args.shift
+         format = ("to_" + format.to_s).to_sym
+       end
        list = split(StringIO.new @raw_input)
        $logger.info list.inspect.light_white
+       yield(list.send(format)) if list.respond_to? format
+       list
      end
-   
+  
+
      private
+
+     ##
+     # Recursive finite automata.
+     # A valid grammar must be defined in the ENVIRONMENT constant.
 
      def split(band, state=Children, depth=0, chars_parsed=0)
 
@@ -51,6 +77,10 @@ module FamilyTree
                scope = Token.starters[car]
                new_stopper = scope.stopper ? scope.stopper.chr : nil
                $logger.debug "New unit: #{scope.name} will end with '#{new_stopper}'"
+               if !name.is_a? String or ( name.is_a? String and !name.strip.empty?)
+                 items.push name
+                 name = ""
+               end
                name = split(band, scope, depth + 1, chars_parsed )
                $logger.debug "Result: " + "[#{name.inspect}]".light_yellow
                $logger.debug "Back in stack: " + "#{items.inspect}".light_cyan

@@ -1,0 +1,9 @@
+# (): Family units - Male, Female, [children]
+# {}: Parents. Me { My Father, My Mother, [My siblings]}
+# $ : In-law
+# * : Main character.
+# · : Abortion
+# ! : sudden or out of the ordinary deaths
+
+ 
+(Txema, Laura, [(Pedro, $Valentina), ($Ramon {Remigio{[X,Y]}, Eusebia, [Fede, Alex]}, Juana)])
