@@ -47,8 +47,18 @@ module FamilyTree
       end
 
       def to_yaml
-        # todo: Develop yaml output
-        raise "Still under development."
+        output = ""
+         output << class_name.upcase + ":\n"
+         self.each do |child| 
+            if child.respond_to? :to_xml
+               child.to_yaml.each_line do |l|
+                 output << "  " + l
+               end
+            else
+              output << "  " + child.to_s + "\n"
+            end
+         end
+         output
       end
 
       def push(name)
