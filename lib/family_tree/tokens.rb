@@ -48,21 +48,24 @@ module FamilyTree
 
       def to_yaml
         output = ""
-         output << class_name.upcase + ":\n"
-         self.each do |child| 
-            if child.respond_to? :to_xml
+         output << class_name.upcase + ": " 
+         unless class_name == "single"
+           output << "\n" 
+           self.each do |child| 
+             if child.respond_to? :to_yaml
                child.to_yaml.each_line do |l|
                  output << "  " + l
                end
-            else
-              output << "  " + child.to_s + "\n"
-            end
+             end
+           end
+         else
+           output << self[0] << "\n"
          end
          output
       end
 
       def push(name)
-        
+
         person = (name.is_a? String)? Single.new(name.strip) : name.dup
         $logger.debug "Adding: '#{person.to_s.light_white}' to the current stack [#{self.class.name.light_white}].".light_magenta
         self << person

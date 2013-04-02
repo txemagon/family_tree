@@ -17,6 +17,9 @@ module FamilyTree
     class TokenError < NetError
     end
 
+    class PaserError < NetError
+    end
+
   end
 
 end
