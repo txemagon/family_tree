@@ -17,7 +17,16 @@ module FamilyTree
     class TokenError < NetError
     end
 
-    class PaserError < NetError
+    class ParserError < NetError
+    end
+
+    class DOMException < NetError
+    end
+
+    class DOMError < DOMException
+    end
+
+    class DOMWarning < DOMException
     end
 
   end

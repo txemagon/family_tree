@@ -16,7 +16,10 @@ module FamilyTree
      end
 
      # Parse tokens
+     logger_level = $logger.level
+     $logger.level = Logger::DEBUG
      dom = Parser.crush(tokens, Relationship.new)
+     $logger.level = logger_level
 
    end
 

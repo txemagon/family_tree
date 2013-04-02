@@ -21,7 +21,9 @@ class App
     begin
       line << ARGF.read_nonblock(1)
       line << ARGF.read
-    rescue
+    rescue Errno::ENOENT => e
+      STDERR.puts e.message
+    rescue 
       STDERR.puts "Type your tree using net format. Ctrl-D to finish."
       line = ARGF.read
     end
