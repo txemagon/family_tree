@@ -39,12 +39,36 @@ module Parser
 
   private
 
+  class Progenitors
+    @members = Array.new
+    @singles = 0
+
+    def initialize(member)
+      @members.push(member) if member
+    end
+
+    def <<(member)
+      @singles += 1 if member.is_a? Single
+      raise ParserError, "Parsing Error. Invalid type of progenitor." unless member.is_a? Single or member.is_a? Marriage
+      raise ParserError, "Parsing Error. Too many progenitors." if @singles > 2
+      @members << member
+    end
+
+  end
+
   def Parser.parse_marriage(items)
     progenitors = []
-    children = []
+    children = FamilyTree::Children.new
     items.each do |item|
-      progenitors << item[0] if item.is_a? FamilyTree::Single
-      children = item if item.is_a? FamilyTree::Children
+      case item
+      when FamilyTree::Single
+        progenitors << item[0]
+        raise ParserError, "Parsing Error. Too many progenitors." if progenitors.size > 2
+      when FamilyTree::Children
+        children += item
+      when FamilyTree::Marriage
+        raise ParserError, "Parsing Error. Too many progenitors." if progenitors.size > 2
+      end
     end
     yield progenitors, children
   end
