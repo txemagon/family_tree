@@ -1,3 +1,4 @@
+module FamilyTree
 module Parser
 
   private
@@ -67,3 +68,4 @@ module Parser
   end
 end
 
+end

@@ -28,7 +28,7 @@ class App
       line = ARGF.read
     end
     
-    Driver::go line, options[:lexer]
+    Driver::go line, options[:lexer], options[:format]
   end
 
   # supplemental methods here

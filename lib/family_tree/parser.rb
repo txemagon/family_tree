@@ -1,4 +1,5 @@
-module Parser
+module FamilyTree
+  module Parser
 
   @@last = nil
 
@@ -70,6 +71,8 @@ module Parser
     end
 
     yield progenitors.singles, children if progenitors.together?
+
+  end
 
   end
 
