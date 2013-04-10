@@ -11,6 +11,7 @@ module FamilyTree
     class DOMException       < NetError;       end;
     class DOMError           < DOMException;   end;
     class DOMWarning         < DOMException;   end;
+    class DOMUniqueness      < DOMWarning;     end;
 
   end
 

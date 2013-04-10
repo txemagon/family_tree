@@ -6,6 +6,7 @@ require "family_tree/lexer"
 require "family_tree/driver"
 require "family_tree/dom/person"
 require "family_tree/dom/relationship"
+require "family_tree/parser/progenitors"
 require "family_tree/parser"
 
 include FamilyTree::Errors
