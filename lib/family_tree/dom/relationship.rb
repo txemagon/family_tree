@@ -2,6 +2,23 @@ module FamilyTree
   module DOM
 
     class Relationship
+
+      class Children < Array
+
+        @relationship 
+        
+        def initialize(owner)
+          @relationship = owner
+        end
+
+        def push(person)
+          unless person.respond_to? :coming_from
+            raise DOMError, "#{} doesn't respond to coming_from method." 
+          end
+          person.coming_from @relationship
+          super
+        end
+      end
        
       attr_accessor :children
 
@@ -10,8 +27,8 @@ module FamilyTree
         params[:members].each { |m| raise DOMError, "DOM Error. Invalid member name #{m.inspect}" unless m.is_a? String }
         @start     = params[:start]
         @end       = params[:end]
-        @children  = params[:children] || []
-        in_law = in_blood = nil
+        @children  = params[:children] || Relationship.new(self)
+        in_law     = in_blood = nil
         raise DOMError, "DOM Error: Too many progenitors" unless params[:members].size < 3
         @member    = params[:members].collect do |m| 
           p = Person.new(:name => m)

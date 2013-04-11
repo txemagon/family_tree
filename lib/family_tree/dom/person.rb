@@ -4,7 +4,7 @@ module FamilyTree
 
     class Person
       attr_reader   :name
-      attr_accessor :comming_from
+      attr_accessor :coming_from
 
       @@id       = 0
       @@list     = Hash.new
