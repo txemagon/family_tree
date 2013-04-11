@@ -4,9 +4,6 @@ module FamilyTree
 
     class Dot < AbstractOutput
 
-      def start_with(initial_node)
-      end
-
     end
 
   end

@@ -4,7 +4,7 @@ module FamilyTree
 
     class Person
       attr_reader   :name
-      attr_accessor :coming_from
+      attr_accessor :coming_from, :marriages
 
       @@id       = 0
       @@list     = Hash.new
@@ -80,6 +80,7 @@ module FamilyTree
         name = params[:name]
         raise ParserError, "Parse Error: Name is not a string"    if name and !name.is_a? String
         raise ParserError, "Parse Error: Name is an empty string" if name and !name.is_a? String
+        @marriages = []
 
         if Person.qualified?(name) 
           $logger.debug "The name is: #{name}"
