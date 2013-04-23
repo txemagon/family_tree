@@ -30,6 +30,7 @@ module FamilyTree
               Parser.crush(children, relationship)
               $logger.debug "New parental group. #{relationship.introduce}."
             end
+            @@last.coming_from = r
             $logger.debug "Added #{@@last.name} with siblings #{r.children_names}."
           end
 

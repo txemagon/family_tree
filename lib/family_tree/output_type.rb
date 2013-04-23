@@ -6,6 +6,7 @@ module FamilyTree
       OutputType.constants.select { |c| Class === OutputType.const_get(c) } - [:AbstractOutput]
     end
 
+
     def self._class(name)
       
       name = name.to_s.capitalize.to_sym
@@ -17,12 +18,16 @@ module FamilyTree
 
     end
 
+
     class AbstractOutput
 
       @@initial_node
-      @@relations_done 
+      @@people_done = []
+      @@relations_done = []
+
 
       def start_with(initial_node)
+
         #raise FormatterError, "Formatter error. #{self.class.name} must redefine start_with method."
         unless initial_node.is_a? Relationship
           raise FormatterError, "Formatter Error. Initial node must be a relationship."
@@ -33,29 +38,49 @@ module FamilyTree
 
       end
 
+
       def process_relationship(node)
+
         raise FormatterError, "Formatter Error. Expecting a relationship." unless node.is_a? Relationship
-        puts "#{node.member[0].full_name} = #{node.member[1].full_name}" if node.member[0] and node.member[1]
+
+        return if @@relations_done.include? node
+        @@relations_done << node
+
+        if node.member[0] and node.member[1]
+           $logger.debug "#{node.member[0].full_name} <=> #{node.member[1].full_name}" 
+        end
+        yield node
+
         node.member.each do |m|
           process_person(m)
         end
+
         process_children(node.children)
+        
       end
+
       
       def process_children(node)
         unless node.is_a? Relationship::Children
           raise FormatterError, "Formatter Error. Expecting children." 
         end
+
         node.each do |children|
-          puts children.full_name
+          process_person children
         end
       end
+
 
       def process_person(node)
         unless node.is_a? Person
           raise FormatterError, "Formatter Error. Expecting children." 
         end
-        puts node.full_name
+        return if @@people_done.include? node
+        @@people_done << node
+        $logger.debug node.full_name
+        yield node
+        process_relationship(node.coming_from) if node.coming_from
+        node.marriages.each { |marr| process_relationship marr }
       end
 
     end

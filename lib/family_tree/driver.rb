@@ -18,11 +18,11 @@ module FamilyTree
      # Parse tokens
      dom = Parser.crush(tokens, Relationship.new)
 
-     logger_level = $logger.level
-     $logger.level = Logger::DEBUG
+     # logger_level = $logger.level
+     # $logger.level = Logger::DEBUG
      # Write down the hierarchy
      Formatter.new(output_format).start_with(dom)
-     $logger.level = logger_level
+     # $logger.level = logger_level
 
    end
 

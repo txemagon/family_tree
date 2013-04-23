@@ -3,12 +3,21 @@ module FamilyTree
 
     class Relationship
 
+      @@id = 0
+
       attr_accessor :children
-      attr_reader :member
+      attr_reader :member, :id
+
 
       def initialize(params={})
+
         params[:members] ||= []
-        params[:members].each { |m| raise DOMError, "DOM Error. Invalid member name #{m.inspect}" unless m.is_a? String }
+        params[:members].each do |m| 
+          raise DOMError, "DOM Error. Invalid member name #{m.inspect}" unless m.is_a? String 
+        end
+
+        @id = @@id
+        @@id += 1
         @start     = params[:start]
         @end       = params[:end]
         @children  = params[:children] || Relationship::Children.new(self)

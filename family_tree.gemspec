@@ -18,5 +18,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('aruba')
   gem.add_development_dependency('colorize')
   gem.add_development_dependency('rake', '~> 0.9.2')
+  gem.add_development_dependency('rails-erd')
   gem.add_dependency('methadone', '~> 1.2.6')
 end
