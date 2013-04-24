@@ -26,15 +26,23 @@ module FamilyTree
       @@relations_done = []
 
 
-      def start_with(initial_node)
+      def start_with(initial_node, output=StringIO.new)
 
         #raise FormatterError, "Formatter error. #{self.class.name} must redefine start_with method."
         unless initial_node.is_a? Relationship
           raise FormatterError, "Formatter Error. Initial node must be a relationship."
         end
         @@initial_node = initial_node
+        @output = output
 
         process_relationship(initial_node)
+        output = @output.string.gsub(/\@/, "_")
+
+        if self.respond_to? :template
+          return template.result(binding)
+        end
+
+        return output
 
       end
 

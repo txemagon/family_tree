@@ -7,6 +7,7 @@ module FamilyTree
       class Children < Array
 
         @relationship 
+        attr_reader :relationship
 
         def initialize(owner)
           @relationship = owner
