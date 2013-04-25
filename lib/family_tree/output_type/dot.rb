@@ -22,7 +22,7 @@ module FamilyTree
 
 
       def process_children(node)
-        @output.puts "{rank=same;\n #{node.collect{ |s| "#{s.full_name};" }.join(";\n") } };\n"
+        @output.puts "{rank=same;\n #{node.collect{ |s| "#{s.full_name};" }.join("\n") } };\n"
         super
       end
 
@@ -42,7 +42,9 @@ module FamilyTree
 
         ERB.new <<-EOF
 digraph {
-        graph [rankdir=BT, splines=ortho];
+        graph [rankdir=BT];
+        edge[dir=none]
+        node[shape=box, style=rounded];
 
 <%= output %>
 

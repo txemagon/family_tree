@@ -9,15 +9,23 @@ module FamilyTree
       attr_reader :member, :id
 
 
-      def initialize(params={})
+      def add_members(members)
+        raise DOMError, "DOM Error. Relationship members were alreadys set." unless @member.empty?
+        @member = members
+      end
+
+
+      def initialize(params={}, fake=false)
 
         params[:members] ||= []
         params[:members].each do |m| 
           raise DOMError, "DOM Error. Invalid member name #{m.inspect}" unless m.is_a? String 
         end
 
-        @id = @@id
-        @@id += 1
+        unless fake
+          @id = @@id
+          @@id += 1
+        end
         @start     = params[:start]
         @end       = params[:end]
         @children  = params[:children] || Relationship::Children.new(self)
