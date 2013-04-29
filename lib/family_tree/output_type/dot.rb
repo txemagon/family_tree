@@ -9,20 +9,21 @@ module FamilyTree
       # Use @output instance variable as IO system
       def process_relationship(node)
 
-        @output.puts "{rank=same;\n" 
-        node.member.each do |m|
-          @output.puts "#{m.full_name};\n"
-        end
-        @output.puts "R_#{node.id};\n"
-        @output.puts "};\n"
-        super do |node|
-          @output.puts "\tR_#{node.id} [label=\"\" shape=\"point\"];"
-        end
+          super do |node|
+            @output.print "\n\t{rank=same; " 
+            node.member.each do |m|
+              @output.print "#{m.full_name}; "
+            end
+            @output.print "R_#{node.id}; "
+            @output.print "};\n"
+
+            @output.puts "\tR_#{node.id} [label=\"\" shape=\"point\"];"
+          end
       end
 
 
       def process_children(node)
-        @output.puts "{rank=same;\n #{node.collect{ |s| "#{s.full_name};" }.join("\n") } };\n"
+        @output.puts "\n\t{rank=same;  #{node.collect{ |s| s.full_name}.join("; ") } };\n"
         super
       end
 
@@ -43,7 +44,7 @@ module FamilyTree
         ERB.new <<-EOF
 digraph {
         graph [rankdir=BT];
-        edge[dir=none]
+        edge[dir=none];
         node[shape=box, style=rounded];
 
 <%= output %>
