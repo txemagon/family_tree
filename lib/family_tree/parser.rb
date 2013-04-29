@@ -25,12 +25,12 @@ module FamilyTree
 
         when FamilyTree::Parents
           Parser.parse_marriage(token) do |progenitors, children|
-            r = Relationship.new(:members => progenitors)  do |relationship, kinsman|
+            r = container.reinitialize(:members => progenitors)  do |relationship, kinsman|
               relationship.children << @@last
               Parser.crush(children, relationship)
               $logger.debug "New parental group. #{relationship.introduce}."
             end
-            @@last.coming_from = r
+            # @@last.coming_from = r
             $logger.debug "Added #{@@last.name} with siblings #{r.children_names}."
           end
 
