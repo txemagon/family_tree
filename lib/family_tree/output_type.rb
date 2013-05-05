@@ -86,8 +86,8 @@ module FamilyTree
         return if @@people_done.include? node
         @@people_done << node
         $logger.debug node.full_name
-        yield node
         process_relationship(node.coming_from) if node.coming_from
+        yield node
         node.marriages.each { |marr| process_relationship marr }
       end
 

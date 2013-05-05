@@ -12,6 +12,7 @@ require "family_tree/formatter"
 require "family_tree/output_type"
 require "family_tree/output_type/dot"
 require "family_tree/driver"
+require "family_tree/utils"
 
 include FamilyTree::Errors
 include FamilyTree::Tokens

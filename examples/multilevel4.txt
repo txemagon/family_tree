@@ -1,1 +1,1 @@
-Laura, Txema {Jesus, Juani, [(Brother, $Wife {Daddy, Mom, [Law1, Law2]}), Sister]}, Amparo
+Laura, Txema {Jesus, Juani, [(Brother, $Wife {Daddy, Mom, [Lala, Lalo]}), Sister]}, Amparo

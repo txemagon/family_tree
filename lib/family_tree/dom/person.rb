@@ -75,6 +75,12 @@ module FamilyTree
       end
 
       def initialize(params={})
+        $logger.info "#{params.inspect}"
+        # Normalize intput
+        if (params.is_a? String)
+          params = {:name => params}
+        end
+
         # Input errors
         raise ParserError, "Parse Error: Still no persons without Name. Name is required." unless params[:name]
         name = params[:name]

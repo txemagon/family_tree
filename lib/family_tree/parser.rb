@@ -5,6 +5,7 @@ module FamilyTree
 
     def Parser.crush(tokens, container)
 
+      $logger.debug "Entering Children Environment for #{tokens}"
       raise ParserError, "Parser Error: Invalid container." unless container.is_a? Relationship
 
       tokens.each do |token|
@@ -15,7 +16,12 @@ module FamilyTree
 
         when FamilyTree::Marriage
           Parser.parse_marriage(token) do |progenitors, children|
+            $logger.debug "Reentering Children Environment in a Marriage."
+            $logger.debug "Progenitors: #{progenitors}"
+            $logger.debug "Children: #{children}"
             Relationship.new(:members => progenitors)  do |relationship, kinsman|
+              # todo: If some of the members of the relationsip has progenitors try
+              # to make a new branch and connect it with this one
               container.children.push kinsman unless container.children.include?(kinsman)
               Parser.crush(children, relationship)
               $logger.debug "New sibling #{kinsman.name} added to #{Person.names container.children}."
@@ -25,22 +31,27 @@ module FamilyTree
 
         when FamilyTree::Parents
           Parser.parse_marriage(token) do |progenitors, children|
+            $logger.debug "Reentering Children Environment for Parents."
+            $logger.debug "Progenitors: #{progenitors}"
+            $logger.debug "Children: #{children}"
             r = container.reinitialize(:members => progenitors)  do |relationship, kinsman|
+              # todo: If some of the members of the relationsip has progenitors try
+              # to make a new branch and connect it with this one              
               relationship.children << @@last
               Parser.crush(children, relationship)
               $logger.debug "New parental group. #{relationship.introduce}."
             end
-            # @@last.coming_from = r
             $logger.debug "Added #{@@last.name} with siblings #{r.children_names}."
           end
-
         end
       end
       container
     end
 
 
+## This methods normalizes the complexity of a Marriage but its not the parser itself
     def Parser.parse_marriage(items, over=false, &block)
+      $logger.debug "Entering Marriage Environment for #{items}"
       progenitors = Progenitors.new
       progenitors.over! if over
       children = FamilyTree::Children.new
@@ -48,10 +59,15 @@ module FamilyTree
       items.each do |item|
         $logger.debug "Token: #{item} [#{item.class.name}]"
         case item
-        when FamilyTree::Single, FamilyTree::Marriage
+        when FamilyTree::Single
+          progenitors << item
+          #@@last = DOM::Person.new(:name => item[0])
+        when FamilyTree::Marriage
           progenitors << item
         when FamilyTree::Children
           children += item
+        when FamilyTree::Parents
+          progenitors.connect_with(item)
         end
       end
 

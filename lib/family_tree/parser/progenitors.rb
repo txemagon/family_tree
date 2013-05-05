@@ -12,6 +12,7 @@ module Parser
       @members.push(member) if member
       @marriages = []
       @over = false
+      @last = nil
     end
 
     def <<(member)
@@ -25,9 +26,13 @@ module Parser
       raise ParserError, "Parsing Error. Invalid type of progenitor." unless member.is_a? FamilyTree::Single or member.is_a? FamilyTree::Marriage
       raise ParserError, "Parsing Error. Too many progenitors." if @singles > 2
 
-      @members << member
+      @members << (@last = member)
       @marriages << member if member.is_a? FamilyTree::Marriage
+    end
 
+    def connect_with(progenitors)
+      raise ParserError, "Parsing Error. Progenitors are only allowed for singles." unless @last.is_a? FamilyTree::Single
+      @last.progenitors = progenitors
     end
 
     def over!
