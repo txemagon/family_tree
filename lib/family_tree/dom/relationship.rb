@@ -14,6 +14,16 @@ module FamilyTree
         @member = members
       end
 
+      def add_member(member)
+        member = Person.new member if (member.is_a? String)
+        member = Person.new member[0] if (member.is_a? FamilyTree::Single)
+        unless member.is_a? Person
+          raise DOMError, "DOM Error. Invalid member type for #{member} [#{member.class.name}]"
+        end
+        raise DOMError, "DOM Error. Too many relationship components." unless @member.size < 2
+        @member << member
+      end
+
 
       def initialize(params={}, fake=false)
 
@@ -29,16 +39,22 @@ module FamilyTree
         @start     = params[:start]
         @end       = params[:end]
         @children  = params[:children] || Relationship::Children.new(self)
-        in_law     = in_blood = nil
+        in_law     = in_law_progenitors = in_blood = nil
 
         raise DOMError, "DOM Error: Too many progenitors" unless params[:members].size < 3
 
         @member    = params[:members].collect do |m| 
+          if m.include?("#")
+            m =~ /(.*)#(.*)/m
+            m = $1
+            progenitors = $2
+          end
           p = Person.new(:name => m)
           begin
             if Person.in_law? m
               raise DOMError, "DOM Error: Too many in law relatives in #{params[:members]}" if in_law
               in_law = p 
+              in_law_progenitors = Marshal.load(progenitors) if progenitors
             else
               raise DOMWarning, "DOM Warning: Too many blood relatives in #{params[:members]} use a dollar sign '$' in front of the name of one of the progenitors. i.e. $#{params[:members][0]}." if in_blood
               in_blood = p
@@ -52,7 +68,7 @@ module FamilyTree
 
         $logger.debug "New #{introduce} created."
 
-        yield self, in_blood if in_blood
+        yield self, in_blood, in_law, in_law_progenitors if in_blood and block_given?
 
       end
 
@@ -94,7 +110,7 @@ module FamilyTree
 
         $logger.debug "New #{introduce} created."
 
-        yield self, in_blood if in_blood
+        yield self, in_blood if in_blood and block_given?
 
         return self
 

@@ -95,6 +95,12 @@ module FamilyTree
           toklass.stopper = last
         end
 
+        if token_name == "single"
+          new_token.class_eval do
+              attr_accessor :progenitors
+          end
+        end
+
         self.add_token(token_name, new_token, first, last)
         return [token_name.to_sym, new_token]
       end
@@ -146,8 +152,7 @@ module FamilyTree
         new_token = Token.create token
         FamilyTree.const_set new_token[0].capitalize, new_token[1]
       end
-
     end
-
   end
+
 end

@@ -13,6 +13,7 @@ require "family_tree/output_type"
 require "family_tree/output_type/dot"
 require "family_tree/driver"
 require "family_tree/utils"
+require "debugger"
 
 include FamilyTree::Errors
 include FamilyTree::Tokens

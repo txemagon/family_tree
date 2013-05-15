@@ -17,16 +17,29 @@ module FamilyTree
         when FamilyTree::Marriage
           Parser.parse_marriage(token) do |progenitors, children|
             $logger.debug "Reentering Children Environment in a Marriage."
-            $logger.debug "Progenitors: #{progenitors}"
+            $logger.debug "Progenitors: #{progenitors.singles}"
             $logger.debug "Children: #{children}"
-            Relationship.new(:members => progenitors)  do |relationship, kinsman|
-              # todo: If some of the members of the relationsip has progenitors try
-              # to make a new branch and connect it with this one
-              container.children.push kinsman unless container.children.include?(kinsman)
+            Relationship.new(:members => progenitors.singles)  do |relationship, kinsman, in_law, in_law_progenitors|
+              if kinsman
+                container.children.push kinsman unless container.children.include?(kinsman)
+                $logger.debug "New sibling #{kinsman.name} added to #{Person.names container.children}."
+              end 
               Parser.crush(children, relationship)
-              $logger.debug "New sibling #{kinsman.name} added to #{Person.names container.children}."
+              if in_law
+                if in_law_progenitors
+                  $logger.debug "New branch in #{ in_law.name }" 
+                  children = FamilyTree::Children.new
+                  member = []
+                  in_law_progenitors.each do |element| 
+                      member << element[0] if element.is_a? FamilyTree::Single
+                      children += element if element.is_a? FamilyTree::Children
+                  end 
+                  r = Relationship.new(:members => member)
+                  r = Parser.crush(children, r)    
+                  r.children.push in_law
+                end
+              end
             end
-
           end
 
         when FamilyTree::Parents
@@ -34,9 +47,12 @@ module FamilyTree
             $logger.debug "Reentering Children Environment for Parents."
             $logger.debug "Progenitors: #{progenitors}"
             $logger.debug "Children: #{children}"
-            r = container.reinitialize(:members => progenitors)  do |relationship, kinsman|
+            r = container.reinitialize(:members => progenitors.singles)  do |relationship, kinsman|
               # todo: If some of the members of the relationsip has progenitors try
               # to make a new branch and connect it with this one              
+              progenitors.members.each do |member|
+                $logger.debug "New branch in #{ member.progenitors }" if member.progenitors
+              end
               relationship.children << @@last
               Parser.crush(children, relationship)
               $logger.debug "New parental group. #{relationship.introduce}."
@@ -48,8 +64,7 @@ module FamilyTree
       container
     end
 
-
-## This methods normalizes the complexity of a Marriage but its not the parser itself
+    ## This methods normalizes the complexity of a Marriage but its not the parser itself
     def Parser.parse_marriage(items, over=false, &block)
       $logger.debug "Entering Marriage Environment for #{items}"
       progenitors = Progenitors.new
@@ -87,7 +102,8 @@ module FamilyTree
         end
       end
 
-      yield progenitors.singles, children if progenitors.together?
+      # yield progenitors.singles, children if progenitors.together?
+      yield progenitors, children
 
     end
 
