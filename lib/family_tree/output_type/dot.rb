@@ -8,7 +8,7 @@ module FamilyTree
 
       # Use @output instance variable as IO system
       def process_relationship(node)
-
+        return if @relations_done.include? node
           super do |node|
             @output.print "\n\t{rank=same; " 
             node.member.each do |m|
@@ -32,6 +32,7 @@ module FamilyTree
         super do |node|
           @output.puts "\t#{node.full_name} [label=\"#{node.name}\"];"
           @output.puts "\t#{node.full_name} -> R_#{node.coming_from.id} ;" if node.coming_from
+
           node.marriages.each do |m|
             @output.puts "\t#{node.full_name} -> R_#{m.id}[arrowsize=0];"
           end

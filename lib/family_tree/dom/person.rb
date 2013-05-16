@@ -75,7 +75,6 @@ module FamilyTree
       end
 
       def initialize(params={})
-        $logger.info "#{params.inspect}"
         # Normalize intput
         if (params.is_a? String)
           params = {:name => params}

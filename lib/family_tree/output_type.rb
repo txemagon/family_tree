@@ -21,9 +21,12 @@ module FamilyTree
 
     class AbstractOutput
 
-      @@initial_node
-      @@people_done = []
-      @@relations_done = []
+      def initialize
+        @initial_node
+        @people_done = []
+        @relations_done = []
+        @delayed_jobs = []
+      end
 
 
       def start_with(initial_node, output=StringIO.new)
@@ -32,16 +35,21 @@ module FamilyTree
         unless initial_node.is_a? Relationship
           raise FormatterError, "Formatter Error. Initial node must be a relationship."
         end
-        @@initial_node = initial_node
+        @initial_node = initial_node
         @output = output
 
         process_relationship(initial_node)
+
+        until @delayed_jobs.empty?
+          job = @delayed_jobs.shift
+          job.call()
+        end
+
         output = @output.string.gsub(/\@/, "_")
 
         if self.respond_to? :template
           return template.result(binding)
         end
-
         return output
 
       end
@@ -51,8 +59,8 @@ module FamilyTree
 
         raise FormatterError, "Formatter Error. Expecting a relationship." unless node.is_a? Relationship
 
-        return if @@relations_done.include? node
-        @@relations_done << node
+        return if @relations_done.include? node
+        @relations_done << node
 
         if node.member[0] and node.member[1]
            $logger.debug "#{node.member[0].full_name} <=> #{node.member[1].full_name}" 
@@ -83,12 +91,12 @@ module FamilyTree
         unless node.is_a? Person
           raise FormatterError, "Formatter Error. Expecting children." 
         end
-        return if @@people_done.include? node
-        @@people_done << node
+        return if @people_done.include? node
+        @people_done << node
         $logger.debug node.full_name
         process_relationship(node.coming_from) if node.coming_from
         yield node
-        node.marriages.each { |marr| process_relationship marr }
+        @delayed_jobs.push( Proc.new {node.marriages.each { |marr| process_relationship marr } } )
       end
 
     end
