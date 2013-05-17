@@ -3,7 +3,7 @@
 
 COMMAND="bundle exec bin/family_tree "
 PROC=( 'dot ' 'ccomps -x | dot | gvpack -array3 | neato ')
-DISPLAY=(' ' '| display')
+# DISPLAY=(' ' '| display')
 
 pr=0 
 disp=0
@@ -17,6 +17,7 @@ cat <<FIN
     -h  Shows help and exit
     -d  Opens graphic display
     -n  Rearranges dot output to compact graphic
+        Needs -d display option
 
     run.sh depends on graphviz. Please install it on 
     your system if you still don't have it.
@@ -47,6 +48,15 @@ if [ $# -eq "0" ]; then
   usage
 fi
 
-FINAL="$COMMAND $1 | ${PROC[pr]} ${DISPLAY[disp]}"
+FINAL="$COMMAND $1" 
+if [ $disp -eq "1" ]; then
+    FINAL="$COMMAND $1 | ${PROC[pr]}"
+fi
+
 echo "Executing: $FINAL"
-eval $FINAL
+
+if [ $disp -eq "1" ]; then
+    eval `echo "$FINAL"` | display
+else
+    eval `echo "$FINAL"`
+fi
