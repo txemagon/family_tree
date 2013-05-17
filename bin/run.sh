@@ -47,4 +47,6 @@ if [ $# -eq "0" ]; then
   usage
 fi
 
-`echo "${COMMAND} ${1} | ${PROC[pr]} ${DISPLAY[disp]}"`
+FINAL="$COMMAND $1 | ${PROC[pr]} ${DISPLAY[disp]}"
+echo "Executing: $FINAL"
+eval $FINAL
