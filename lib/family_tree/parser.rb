@@ -37,6 +37,7 @@ module FamilyTree
                   r = Relationship.new(:members => member)
                   r = Parser.crush(children, r)    
                   r.children.push in_law
+		  @@last = kinsman
                 end
               end
             end
