@@ -3,13 +3,12 @@ module FamilyTree
 
     @@last = nil
 
-    def Parser.crush(tokens, container)
+    def Parser.crush(token, container)
 
-      $logger.debug "Entering Children Environment for #{tokens}"
+      $logger.debug "Entering Children Environment for #{token} [#{token.class.name}]"
       raise ParserError, "Parser Error: Invalid container." unless container.is_a? Relationship
 
-      tokens.each do |token|
-        case token
+      case token
 
         when FamilyTree::Single
           container.children.push(@@last = Person.new(:name => token[0]))
@@ -20,10 +19,8 @@ module FamilyTree
             $logger.debug "Progenitors: #{progenitors.singles}"
             $logger.debug "Children: #{children}"
             Relationship.new(:members => progenitors.singles)  do |relationship, kinsman, in_law, in_law_progenitors|
-              if kinsman
-                container.children.push kinsman unless container.children.include?(kinsman)
-                $logger.debug "New sibling #{kinsman.name} added to #{Person.names container.children}."
-              end 
+              container.children.push kinsman unless container.children.include?(kinsman)
+              $logger.debug "New sibling #{kinsman.name} added to #{Person.names container.children}."
               Parser.crush(children, relationship)
               if in_law
                 if in_law_progenitors
@@ -31,19 +28,24 @@ module FamilyTree
                   children = FamilyTree::Children.new
                   member = []
                   in_law_progenitors.each do |element| 
-                      member << element[0] if element.is_a? FamilyTree::Single
-                      children += element if element.is_a? FamilyTree::Children
+                    member << element[0] if element.is_a? FamilyTree::Single
+                    children += element if element.is_a? FamilyTree::Children
                   end 
                   r = Relationship.new(:members => member)
                   r = Parser.crush(children, r)    
                   r.children.push in_law
-		  @@last = kinsman
                 end
               end
+              @@last = kinsman
+            end
+            if progenitors.members[0].progenitors
+              $logger.debug "Parents in a Marriage [#{progenitors.members[0].progenitors.class.name}]"
+              Parser.crush(progenitors.members[0].progenitors, container)
             end
           end
 
         when FamilyTree::Parents
+          $logger.debug "Parsin parents:  #{token}"
           Parser.parse_marriage(token) do |progenitors, children|
             $logger.debug "Reentering Children Environment for Parents."
             $logger.debug "Progenitors: #{progenitors}"
@@ -60,8 +62,11 @@ module FamilyTree
             end
             $logger.debug "Added #{@@last.name} with siblings #{r.children_names}."
           end
+          
+        when FamilyTree::Children, Array
+          token.each { |element| Parser.crush(element, container) }
+
         end
-      end
       container
     end
 
@@ -105,9 +110,6 @@ module FamilyTree
 
       # yield progenitors.singles, children if progenitors.together?
       yield progenitors, children
-
     end
-
   end
-
 end

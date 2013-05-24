@@ -66,6 +66,12 @@ module FamilyTree
         end
       end
 
+      def names
+        (@members - @marriages).map do |m|
+          m[0]
+        end
+      end
+
       def get_marriages
         @marriages
       end

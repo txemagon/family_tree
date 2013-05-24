@@ -1,1 +1,1 @@
-(Txema, {Jesus, Juani}, $Marga, {Angel, Nieves, [(Angel, $Arantxa)]}  , [Jorge, Irene])
+(Txema, {Jesus, Juani, [TxBro, txSis]}, $Marga, {Angel, Nieves, [(Angel, $Arantxa)]}  , [(Jorge, Daniela, [Txema, Pilar]), Irene])
