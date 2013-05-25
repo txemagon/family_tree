@@ -29,7 +29,7 @@ module FamilyTree
                   member = []
                   in_law_progenitors.each do |element| 
                     member << element[0] if element.is_a? FamilyTree::Single
-                    children += element if element.is_a? FamilyTree::Children
+                    children.concat(element) if element.is_a? FamilyTree::Children
                   end 
                   r = Relationship.new(:members => member)
                   r = Parser.crush(children, r)    
@@ -48,15 +48,14 @@ module FamilyTree
           $logger.debug "Parsing parents:  #{token}"
           Parser.parse_marriage(token) do |progenitors, children|
             $logger.debug "Reentering Children Environment for Parents."
-            $logger.debug "Progenitors: #{progenitors}"
+            $logger.debug "Progenitors: #{progenitors.members}"
             $logger.debug "Children: #{children}"
             r = container.reinitialize(:members => progenitors.singles) do |relationship, kinsman, in_law, in_law_progenitors|
               progenitors.members.each do |member|
                 $logger.debug "new branch in #{ member.progenitors }" if member.progenitors
               end
               relationship.children << @@last
-              debugger
-              parser.crush(children, relationship)
+              Parser.crush(children, relationship)
               $logger.debug "new parental group. #{relationship.introduce}."
             end
             $logger.debug "added #{@@last.name} with siblings #{r.children_names}."
@@ -80,11 +79,10 @@ module FamilyTree
         case item
         when FamilyTree::Single
           progenitors << item
-          #@@last = DOM::Person.new(:name => item[0])
         when FamilyTree::Marriage
           progenitors << item
         when FamilyTree::Children
-          children += item
+          children.concat(item)
         when FamilyTree::Parents
           progenitors.connect_with(item)
         end

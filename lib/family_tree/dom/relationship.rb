@@ -73,9 +73,9 @@ module FamilyTree
       end
 
 
-      def reinitialize(*args)
+      def reinitialize(*args, &block)
         children = @children
-        initialize *args
+        initialize *args, &block
         @children = children.concat @children
         return self
       end
