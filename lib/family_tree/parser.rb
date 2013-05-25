@@ -45,30 +45,28 @@ module FamilyTree
           end
 
         when FamilyTree::Parents
-          $logger.debug "Parsin parents:  #{token}"
+          $logger.debug "Parsing parents:  #{token}"
           Parser.parse_marriage(token) do |progenitors, children|
             $logger.debug "Reentering Children Environment for Parents."
             $logger.debug "Progenitors: #{progenitors}"
             $logger.debug "Children: #{children}"
-            r = container.reinitialize(:members => progenitors.singles)  do |relationship, kinsman|
-              # todo: If some of the members of the relationsip has progenitors try
-              # to make a new branch and connect it with this one              
+            r = container.reinitialize(:members => progenitors.singles) do |relationship, kinsman, in_law, in_law_progenitors|
               progenitors.members.each do |member|
-                $logger.debug "New branch in #{ member.progenitors }" if member.progenitors
+                $logger.debug "new branch in #{ member.progenitors }" if member.progenitors
               end
               relationship.children << @@last
-              Parser.crush(children, relationship)
-              $logger.debug "New parental group. #{relationship.introduce}."
+              debugger
+              parser.crush(children, relationship)
+              $logger.debug "new parental group. #{relationship.introduce}."
             end
-            $logger.debug "Added #{@@last.name} with siblings #{r.children_names}."
+            $logger.debug "added #{@@last.name} with siblings #{r.children_names}."
           end
-          
-        when FamilyTree::Children, Array
-          token.each { |element| Parser.crush(element, container) }
 
+        when FamilyTree::Children
+          token.each { |element| Parser.crush(element, container) }
         end
-      container
-    end
+        container
+      end
 
     ## This methods normalizes the complexity of a Marriage but its not the parser itself
     def Parser.parse_marriage(items, over=false, &block)

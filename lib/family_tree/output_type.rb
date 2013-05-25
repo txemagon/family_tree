@@ -78,7 +78,7 @@ module FamilyTree
       
       def process_children(node)
         unless node.is_a? Relationship::Children
-          raise FormatterError, "Formatter Error. Expecting children." 
+          raise FormatterError, "Formatter Error. Expecting children. Found #{node.class.name}" 
         end
 
         node.each do |children|
@@ -89,7 +89,7 @@ module FamilyTree
 
       def process_person(node)
         unless node.is_a? Person
-          raise FormatterError, "Formatter Error. Expecting children." 
+          raise FormatterError, "Formatter Error. Expecting person. Found #{node.class.name}"
         end
         return if @people_done.include? node
         @people_done << node
