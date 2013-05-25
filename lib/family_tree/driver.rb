@@ -22,8 +22,10 @@ module FamilyTree
      #}
 
      # Write down the hierarchy
-     puts Formatter.new(output_format).start_with(dom)
+     output = Formatter.new(output_format).start_with(dom)
 
+     puts output
+     output     
    end
 
  end
