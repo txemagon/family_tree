@@ -1,3 +1,4 @@
+require "open4"
 require "colorize"
 require "family_tree/version"
 require "family_tree/errors"
@@ -13,7 +14,7 @@ require "family_tree/output_type"
 require "family_tree/output_type/dot"
 require "family_tree/driver"
 require "family_tree/utils"
-require "debugger"
+#require "debugger"
 
 include FamilyTree::Errors
 include FamilyTree::Tokens

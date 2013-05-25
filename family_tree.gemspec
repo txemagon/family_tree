@@ -19,6 +19,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('colorize')
   gem.add_development_dependency('rake', '~> 0.9.2')
   gem.add_development_dependency('rails-erd')
-  gem.add_development_dependency('debugger')
+  #gem.add_development_dependency('debugger')
   gem.add_dependency('methadone', '~> 1.2.6')
+  gem.add_dependency('open4')
 end

@@ -54,6 +54,13 @@ digraph {
         EOF
       end
 
+      private
+
+      def gender(name)
+        puts ">> #{File.dirname(__FILE__)}"
+        status = POpen4.popen4("vendor")
+      end
+
     end
 
   end
