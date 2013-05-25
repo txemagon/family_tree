@@ -39,7 +39,7 @@ module FamilyTree
         @start     = params[:start]
         @end       = params[:end]
         @children  = params[:children] || Relationship::Children.new(self)
-        in_law     = in_law_progenitors = in_blood = nil
+        in_law     = in_law_progenitors = in_blood = in_blood_progenitors = nil
 
         raise DOMError, "DOM Error: Too many progenitors" unless params[:members].size < 3
 
@@ -58,6 +58,12 @@ module FamilyTree
             else
               raise DOMWarning, "DOM Warning: Too many blood relatives in #{params[:members]} use a dollar sign '$' in front of the name of one of the progenitors. i.e. $#{params[:members][0]}." if in_blood
               in_blood = p
+              if progenitors
+                if in_blood_progenitors
+                  raise DOMError, "DOM Errors. No main branch. Use a $ in front of one of the progenitors. i.e. $#{p.name}"
+                end
+                in_blood_progenitors = Marshal.load(progenitors) 
+              end
             end
           rescue DOMWarning => e
             STDERR.puts e.message
@@ -68,7 +74,7 @@ module FamilyTree
 
         $logger.debug "New #{introduce} created."
 
-        yield self, in_blood, in_law, in_law_progenitors if in_blood and block_given?
+        yield self, in_blood, in_blood_progenitors, in_law, in_law_progenitors if in_blood and block_given?
 
       end
 

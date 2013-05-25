@@ -18,7 +18,7 @@ module FamilyTree
             $logger.debug "Reentering Children Environment in a Marriage."
             $logger.debug "Progenitors: #{progenitors.singles}"
             $logger.debug "Children: #{children}"
-            Relationship.new(:members => progenitors.singles)  do |relationship, kinsman, in_law, in_law_progenitors|
+            Relationship.new(:members => progenitors.singles)  do |relationship, kinsman, in_blood_progenitors, in_law, in_law_progenitors|
               container.children.push kinsman unless container.children.include?(kinsman)
               $logger.debug "New sibling #{kinsman.name} added to #{Person.names container.children}."
               Parser.crush(children, relationship)
@@ -50,11 +50,29 @@ module FamilyTree
             $logger.debug "Reentering Children Environment for Parents."
             $logger.debug "Progenitors: #{progenitors.members}"
             $logger.debug "Children: #{children}"
-            r = container.reinitialize(:members => progenitors.singles) do |relationship, kinsman, in_law, in_law_progenitors|
-              progenitors.members.each do |member|
-                $logger.debug "new branch in #{ member.progenitors }" if member.progenitors
+            r = container.reinitialize(:members => progenitors.singles) do |relationship, kinsman, in_blood_progenitors, in_law, in_law_progenitors|
+              $logger.debug "In blood progenitors: #{in_blood_progenitors}"
+              if in_blood_progenitors
+                $logger.debug "new branch in #{ in_blood_progenitors }" 
+                last = @last
+                @last = kinsman
+                $logger.debug "Kinsman #{kinsman.name}"
+                r = Relationship.new
+                c = Parser.crush(in_blood_progenitors, r)
+                r.children.push kinsman
+                @last = last
               end
-              relationship.children << @@last
+              if in_law_progenitors
+                $logger.debug "new branch in #{ in_law_progenitors }" 
+                last = @last
+                @last = in_law
+                $logger.debug "In law #{in_law.name}"
+                r = Relationship.new
+                c = Parser.crush(in_law_progenitors, r)
+                r.children.push in_law
+                @last = last
+              end
+              #relationship.children << @@last
               Parser.crush(children, relationship)
               $logger.debug "new parental group. #{relationship.introduce}."
             end

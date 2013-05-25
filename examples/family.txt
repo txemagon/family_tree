@@ -1,1 +1,8 @@
-($Jose {Manuel, Guadalupe, [Manolo, Conchi, Javi, Lupe]}, Pilar {Manuel, Gabriela}, [(Laura, $Txema, [Jorge, Irene]) ]), (Charo, $Miguel, [Gabriela]), (Javi, $Marisa, [Diana]), (Merce, $Fernando, [Candela])
+( 
+  Pilar { $Manuel, Gabriela}, 
+  $Jose { Manuel , $Guadalupe, [Manolo, Conchi, Javi, Lupe] }, 
+  [ (Laura, $Txema, [Jorge, Irene]) ]
+), 
+( Charo, $Miguel, [Gabriela]), 
+( Javi , $Marisa, [Diana]), 
+( Merce, $Fernando, [Candela])

@@ -1,0 +1,5 @@
+# Whenever any of the parents have a dollar in front (no main branch)
+# then an error shall be raised.
+
+me {father {grandpaOne, grandmaOne}, mother {grandpaTwo, grandmaTwo}}
+

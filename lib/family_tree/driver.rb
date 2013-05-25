@@ -17,9 +17,9 @@ module FamilyTree
      
      dom = nil
      # Parse tokens
-     dwelve_into{
+     #dwelve_into{
      dom = Parser.crush(tokens, Relationship.new)
-     }
+     #}
 
      # Write down the hierarchy
      puts Formatter.new(output_format).start_with(dom)

@@ -1,0 +1,2 @@
+me {father {grandpaOne, grandmaOne}, $mother {grandpaTwo, grandmaTwo}}
+
