@@ -52,9 +52,9 @@ Algoritmo[](#Algoritmo)
 4.  Devolver *DOM::Person*
 
 ![Graph
-Diagram](/system/images/graphviz/978b306bb7b148c0d43b5f7e306eecf3.png)
+Diagram](images/singl1_alg.png)
 ![Graph
-Diagram](/system/images/graphviz/e20110b3a02af96a4f305b3efdab22fc.png)
+Diagram](images/singl2_alg.png)
 
 ### Marriage[](#Marriage)
 
@@ -77,7 +77,7 @@ Diagram](/system/images/graphviz/e20110b3a02af96a4f305b3efdab22fc.png)
 2.  Devolver el *DOM::Person* que sea familiar
 
 ![Graph
-Diagram](/system/images/graphviz/574e6c58e2718f213aeddb5f885f67d3.png)
+Diagram](images/marriage_alg.png)
 
 ### IncompleteMarriage[](#IncompleteMarriage)
 
@@ -92,7 +92,7 @@ Diagram](/system/images/graphviz/574e6c58e2718f213aeddb5f885f67d3.png)
     2.  Añadir la lista de *Children* (*DOM::Person*) como hijos
 
 ![Graph
-Diagram](/system/images/graphviz/c11c69eedec4bf092fcd7e3522eb3b34.png)
+Diagram](images/incomp_marriage_alg.png)
 
 ### Children[](#Children)
 
@@ -109,6 +109,6 @@ Diagram](/system/images/graphviz/c11c69eedec4bf092fcd7e3522eb3b34.png)
 3.  Devolver una lista de *DOM::Person*
 
 ![Graph
-Diagram](/system/images/graphviz/2d2e51fafcbd69dfc3169735c325a5d8.png)
+Diagram](images/children_alg.png)
 
 En un número variable de ramas.
