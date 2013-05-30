@@ -1,0 +1,20 @@
+digraph StateDiag {
+
+    rankdir=LR;
+    node [shape="circle", style="rounded", fontname="Arial"];
+    edge [shape="ortho", fontname="Arial", fontcolor="Blue", fontsize="10"];
+
+    subgraph Children { 
+    	Children -> Single   [label="single"];
+    	Children -> Marriage [label="marriage"];
+    	Children -> Marriage [label="parents"];
+    	Children -> Error    [label="children"];
+    }
+
+    subgraph Marriage { 
+    	Marriage -> Single   [label="single"];
+    	Marriage -> Marriage [label="marriage"];
+    	Marriage -> Marriage [label="parents"];
+    	Marriage -> Children [label="children"];
+    }
+}
